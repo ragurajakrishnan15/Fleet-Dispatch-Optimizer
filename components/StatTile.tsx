@@ -13,8 +13,8 @@ export default function StatTile({ label, value, delta, deltaDirection, deltaIsG
   return (
     <div className="rounded-xl border border-line bg-panel p-4 flex flex-col gap-2">
       <div className="text-xs uppercase tracking-wide text-muted">{label}</div>
-      <div className="flex items-end justify-between gap-3">
-        <div className="text-3xl font-semibold tabular-nums">{value}</div>
+      <div className="flex flex-wrap items-end justify-between gap-x-3 gap-y-1">
+        <div className="text-2xl sm:text-3xl font-semibold tabular-nums whitespace-nowrap">{value}</div>
         {sparklineData && sparklineData.length > 1 && <Sparkline data={sparklineData} />}
       </div>
       {delta && (
@@ -36,7 +36,7 @@ function Sparkline({ data }: { data: number[] }) {
   const pts = data.map((v, i) => [(i / (data.length - 1)) * w, h - 3 - ((v - min) / span) * (h - 6)] as const);
   const d = pts.map(([x, y], i) => `${i ? "L" : "M"}${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
   return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden className="shrink-0">
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden className="shrink-0 max-w-full">
       <path d={d} fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round" />
       <circle cx={pts[pts.length - 1][0]} cy={pts[pts.length - 1][1]} r="2.5" fill="var(--accent)" />
     </svg>
