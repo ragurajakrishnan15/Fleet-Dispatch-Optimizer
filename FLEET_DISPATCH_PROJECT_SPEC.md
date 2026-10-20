@@ -358,8 +358,10 @@ Store pre-computed gradient boosting coefficients in `model-weights.json`:
 
 ## What to Put on Resume / Cover Letter
 
-**Resume line:**
-"Fleet Dispatch Optimizer — Built a marketplace logistics optimization tool demonstrating CP-SAT-style vehicle dispatch, ML demand forecasting, and A/B experiment evaluation [link]"
+**Resume line** (updated to match what was actually built; live link https://fleet-dispatch-optimizer.vercel.app):
+"Fleet Dispatch Optimizer — Built and deployed an interactive marketplace-logistics demo (Next.js, TypeScript): exact vehicle-to-zone dispatch via the Hungarian algorithm on a capacity-expanded assignment problem with a revenue-plus-rider-wait objective, and a 30-day simulated A/B test analyzed with paired t-tests and a 12-scenario sensitivity sweep (+3.5% revenue/vehicle-hr, −5% pickup ETA vs. a nearest-zone baseline). https://fleet-dispatch-optimizer.vercel.app"
 
 **Cover letter mention:**
-"I built an interactive fleet dispatch optimization demo at [link] that implements the core technical skills in this role — constraint-based vehicle assignment, demand prediction models, and statistical experiment evaluation — so you can experience my work directly."
+"I built an interactive fleet-dispatch demo at https://fleet-dispatch-optimizer.vercel.app that shows how I approach marketplace logistics: formulating dispatch as a constrained assignment problem and solving it exactly, designing the objective (I found a pure-revenue objective slightly worsened rider wait and fixed it), and evaluating it with a controlled experiment and a sensitivity analysis. It runs entirely on synthetic data and says so."
+
+**Be ready to say in interviews:** all numbers come from a simulation on synthetic data; the demand model is a hand-specified rate model, not a trained ML model; the solver is the Hungarian algorithm (exact), not CP-SAT.
