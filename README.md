@@ -1,5 +1,7 @@
 # Fleet Dispatch Optimizer
 
+**Live demo: https://fleet-dispatch-optimizer.vercel.app**
+
 Interactive demo of autonomous-vehicle fleet dispatch for a ride-hail marketplace: demand forecasting, exact assignment optimization, A/B experiment analysis and fleet KPIs. Everything runs client-side on **synthetic data**.
 
 ## Pages
@@ -29,4 +31,4 @@ npm run simulate       # regenerate the 30-day experiment results
 Next.js 16 (App Router, Cache Components), TypeScript, Tailwind v4, Recharts. The map is hand-rolled SVG with a stylised coastline, so no API keys are needed.
 
 ## Deploy
-Import the repo in Vercel (no environment variables required).
+Deployed on Vercel (no environment variables required). Deploy with `npx vercel --prod`, or import the repo at vercel.com/new.
