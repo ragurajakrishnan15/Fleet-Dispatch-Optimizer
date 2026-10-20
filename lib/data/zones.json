@@ -1,0 +1,22 @@
+[
+  {"id":"downtown_sf","name":"Downtown SF","lat":37.7749,"lng":-122.4194,"radius_km":1.6,"type":"commercial"},
+  {"id":"sfo_airport","name":"SFO Airport","lat":37.6213,"lng":-122.379,"radius_km":2.2,"type":"airport"},
+  {"id":"mission","name":"Mission District","lat":37.7599,"lng":-122.4148,"radius_km":1.4,"type":"entertainment"},
+  {"id":"soma","name":"SOMA","lat":37.7785,"lng":-122.395,"radius_km":1.3,"type":"tech_campus"},
+  {"id":"fidi","name":"Financial District","lat":37.7946,"lng":-122.3999,"radius_km":1.1,"type":"commercial"},
+  {"id":"castro","name":"Castro","lat":37.7609,"lng":-122.435,"radius_km":1.1,"type":"entertainment"},
+  {"id":"sunset","name":"Sunset District","lat":37.7531,"lng":-122.4946,"radius_km":2.2,"type":"residential"},
+  {"id":"richmond","name":"Richmond District","lat":37.7799,"lng":-122.4782,"radius_km":2.0,"type":"residential"},
+  {"id":"marina","name":"Marina","lat":37.8015,"lng":-122.4368,"radius_km":1.2,"type":"residential"},
+  {"id":"north_beach","name":"North Beach","lat":37.806,"lng":-122.4103,"radius_km":1.0,"type":"entertainment"},
+  {"id":"mv_castro","name":"Mountain View - Castro St","lat":37.3861,"lng":-122.0839,"radius_km":1.5,"type":"commercial"},
+  {"id":"mv_google","name":"Mountain View - Google Campus","lat":37.422,"lng":-122.0841,"radius_km":1.8,"type":"tech_campus"},
+  {"id":"palo_alto","name":"Palo Alto - University Ave","lat":37.4419,"lng":-122.143,"radius_km":1.6,"type":"commercial"},
+  {"id":"sunnyvale","name":"Sunnyvale","lat":37.3688,"lng":-122.0363,"radius_km":2.2,"type":"tech_campus"},
+  {"id":"san_mateo","name":"San Mateo","lat":37.563,"lng":-122.3255,"radius_km":2.2,"type":"residential"},
+  {"id":"daly_city","name":"Daly City","lat":37.6879,"lng":-122.4702,"radius_km":2.0,"type":"residential"},
+  {"id":"south_sf","name":"South SF","lat":37.6547,"lng":-122.4077,"radius_km":2.0,"type":"commercial"},
+  {"id":"redwood_city","name":"Redwood City","lat":37.4852,"lng":-122.2364,"radius_km":2.0,"type":"commercial"},
+  {"id":"fremont","name":"Fremont","lat":37.5485,"lng":-121.9886,"radius_km":2.6,"type":"residential"},
+  {"id":"san_jose","name":"San Jose - Downtown","lat":37.3382,"lng":-121.8863,"radius_km":2.2,"type":"commercial"}
+]

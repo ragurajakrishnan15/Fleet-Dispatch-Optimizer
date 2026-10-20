@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0a1020;
+  --panel: #111a2e;
+  --panel-2: #16213a;
+  --border: #223152;
+  --fg: #e6edf7;
+  --muted: #93a3c0;
+  --accent: #3b82f6;
+  --accent-soft: #1d3a6e;
+  --accent-2: #f59e0b;
+  --good: #34d399;
+  --bad: #f87171;
+  --map-land: #15213b;
+  --map-water: #0a1020;
+  --map-line: #22335a;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #f4f6fb;
+  --panel: #ffffff;
+  --panel-2: #eef2fa;
+  --border: #d5ddee;
+  --fg: #0f1a30;
+  --muted: #55658a;
+  --accent: #2563eb;
+  --accent-soft: #dbe7ff;
+  --accent-2: #d97706;
+  --good: #059669;
+  --bad: #dc2626;
+  --map-land: #e3e9f6;
+  --map-water: #c7d6ee;
+  --map-line: #b9c7e3;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-line: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-2: var(--accent-2);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Recharts text + grid pick up theme colours */
+.recharts-cartesian-axis-tick-value {
+  fill: var(--muted);
+  font-size: 11px;
+}
+.recharts-legend-item-text {
+  color: var(--muted) !important;
+  font-size: 12px;
+}
+
+input[type="range"] {
+  accent-color: var(--accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
