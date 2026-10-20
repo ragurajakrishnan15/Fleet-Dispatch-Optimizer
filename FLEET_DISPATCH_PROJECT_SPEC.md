@@ -356,13 +356,10 @@ Store pre-computed gradient boosting coefficients in `model-weights.json`:
 
 ---
 
-## What to Put on Resume / Cover Letter
+## What to Put on Resume
 
 **Resume line** (updated to match what was actually built; live link https://fleet-dispatch-optimizer.vercel.app):
 "Fleet Dispatch Optimizer — Built and deployed an end-to-end marketplace-logistics project (Python, SQL, TypeScript/Next.js): vehicle-to-zone dispatch formulated as an assignment problem and verified optimal with OR-Tools CP-SAT, a revenue-plus-rider-wait objective, a SQL-feature-pipeline gradient-boosted demand model (scikit-learn), and a 30-day simulated A/B test analyzed with paired t-tests and a 12-scenario sensitivity sweep (+3.5% revenue/vehicle-hr, -5% pickup ETA vs. a nearest-zone baseline). https://fleet-dispatch-optimizer.vercel.app"
-
-**Cover letter mention:**
-"I built a fleet-dispatch project at https://fleet-dispatch-optimizer.vercel.app that mirrors the work in this role: I formulated off-hail vehicle dispatch as a constrained assignment problem, solved it exactly and cross-checked the optimum with CP-SAT, designed the objective (a pure-revenue objective slightly worsened rider wait, so I added a wait cost), built a SQL feature pipeline and gradient-boosted demand model, and evaluated the policy with a controlled experiment and a sensitivity analysis. Everything runs on synthetic data and says so."
 
 **Be ready to say in interviews:**
 - All results come from a simulation on synthetic data, not real operations.
