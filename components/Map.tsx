@@ -103,7 +103,7 @@ export default function ZoneMap({
               key={v}
               onClick={() => setView(v)}
               aria-pressed={view === v}
-              className={`px-3 py-1 text-xs ${view === v ? "bg-accent text-white" : "text-muted hover:bg-panel-2"}`}
+              className={`px-3 py-1 text-xs ${view === v ? "bg-accent-btn text-white" : "text-muted hover:bg-panel-2"}`}
             >
               {v === "bay" ? "Bay Area" : "San Francisco"}
             </button>
@@ -111,7 +111,7 @@ export default function ZoneMap({
         </div>
       </div>
       <MapCtx.Provider value={api}>
-        <svg viewBox={`0 0 ${WIDTH} ${api.height}`} className="w-full h-auto block" style={{ background: "var(--map-water)" }} role="img" aria-label="Zone map">
+        <svg viewBox={`0 0 ${WIDTH} ${api.height}`} className="w-full h-auto block" style={{ background: "var(--map-water)" }} role="group" aria-label="Zone map">
           <path d={land} fill="var(--map-land)" />
           <g stroke="var(--map-line)" strokeWidth="0.5" opacity="0.6">
             {gridLines}

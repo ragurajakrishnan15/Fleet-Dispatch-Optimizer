@@ -9,6 +9,7 @@
   --muted: #93a3c0;
   --accent: #3b82f6;
   --accent-soft: #1d3a6e;
+  --accent-btn: #2563eb;
   --accent-2: #f59e0b;
   --good: #34d399;
   --bad: #f87171;
@@ -27,8 +28,9 @@
   --muted: #55658a;
   --accent: #2563eb;
   --accent-soft: #dbe7ff;
-  --accent-2: #d97706;
-  --good: #059669;
+  --accent-btn: #1d4ed8;
+  --accent-2: #b45309;
+  --good: #047857;
   --bad: #dc2626;
   --map-land: #e3e9f6;
   --map-water: #c7d6ee;
@@ -45,6 +47,7 @@
   --color-muted: var(--muted);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-accent-btn: var(--accent-btn);
   --color-accent-2: var(--accent-2);
   --color-good: var(--good);
   --color-bad: var(--bad);

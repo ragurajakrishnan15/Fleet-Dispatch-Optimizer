@@ -100,7 +100,7 @@ export default function ExperimentPage() {
                 key={k}
                 onClick={() => setAnalysis(k)}
                 aria-pressed={analysis === k}
-                className={`px-3 py-1.5 ${analysis === k ? "bg-accent text-white" : "text-muted hover:bg-panel-2"}`}
+                className={`px-3 py-1.5 ${analysis === k ? "bg-accent-btn text-white" : "text-muted hover:bg-panel-2"}`}
               >
                 {l}
               </button>
@@ -204,7 +204,7 @@ export default function ExperimentPage() {
                     const g = sens.grid.find((x) => x.clustering === c && x.demandMultiplier === d)!;
                     const base = c === 2 && d === 1;
                     return (
-                      <td key={d} className={`text-right py-2 ${base ? "bg-accent-soft" : ""}`}>
+                      <td key={d} className={`text-right py-2 ${base ? "bg-panel-2 font-medium" : ""}`}>
                         <span className={g.revLift > 0 ? "text-good" : "text-bad"}>{pct1(g.revLift)} rev</span> <span className="text-muted">·</span>{" "}
                         <span className={g.etaLift < 0 ? "text-good" : "text-bad"}>{pct1(g.etaLift)} ETA</span>
                       </td>
@@ -233,7 +233,7 @@ export default function ExperimentPage() {
             </thead>
             <tbody>
               {sens.waitCost.map((w) => (
-                <tr key={w.waitCostPerMin} className={`border-b border-line last:border-0 ${w.waitCostPerMin === 0.5 ? "bg-accent-soft" : ""}`}>
+                <tr key={w.waitCostPerMin} className={`border-b border-line last:border-0 ${w.waitCostPerMin === 0.5 ? "bg-panel-2 font-medium" : ""}`}>
                   <td className="py-2">
                     ${w.waitCostPerMin.toFixed(2)}
                     {w.waitCostPerMin === 0.5 && <span className="text-muted"> (default)</span>}

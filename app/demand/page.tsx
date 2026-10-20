@@ -69,7 +69,7 @@ export default function DemandPage() {
                     key={d}
                     onClick={() => setDow(i)}
                     aria-pressed={dow === i}
-                    className={`px-2.5 py-1.5 text-xs ${dow === i ? "bg-accent text-white" : "text-muted hover:bg-panel-2"}`}
+                    className={`px-2.5 py-1.5 text-xs ${dow === i ? "bg-accent-btn text-white" : "text-muted hover:bg-panel-2"}`}
                   >
                     {d}
                   </button>

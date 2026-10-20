@@ -41,7 +41,7 @@ export default function HeatmapLayer({
             onClick={() => onSelect?.(z.id)}
             onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onSelect?.(z.id)}
             tabIndex={onSelect ? 0 : undefined}
-            role={onSelect ? "button" : undefined}
+            role={onSelect ? "button" : "img"}
             aria-label={`${z.name}: ${formatValue(v)}`}
             style={{ cursor: onSelect ? "pointer" : "default" }}
           >

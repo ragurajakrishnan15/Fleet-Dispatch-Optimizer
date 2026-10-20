@@ -29,8 +29,7 @@ const gapData = raw.hourly.map((h) => ({
 }));
 const zoneData = raw.zoneRevenue.slice(0, 10).map((z) => ({ name: zoneById[z.zoneId].name, revenue: z.treatment }));
 
-const ACTIVE = 187; // simulated uptime snapshot
-const FLEET = 200;
+const rides = { t: avg(trt, "ridesCompleted"), c: avg(ctl, "ridesCompleted") };
 
 export default function MetricsPage() {
   return (
@@ -71,10 +70,13 @@ export default function MetricsPage() {
           sparklineData={last12("revenuePerVehicleHr")}
         />
         <StatTile
-          label="Active vehicles"
-          value={`${ACTIVE}/${FLEET}`}
-          delta={`${((ACTIVE / FLEET) * 100).toFixed(1)}% online`}
-          deltaNote="(simulated snapshot)"
+          label="Rides completed / day"
+          value={Math.round(rides.t).toLocaleString("en-US")}
+          delta={`${rides.t >= rides.c ? "+" : "-"}${Math.abs(((rides.t - rides.c) / rides.c) * 100).toFixed(1)}%`}
+          deltaDirection={rides.t >= rides.c ? "up" : "down"}
+          deltaIsGood={rides.t >= rides.c}
+          deltaNote="vs naive"
+          sparklineData={last12("ridesCompleted")}
         />
       </section>
 

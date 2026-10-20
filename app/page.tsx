@@ -18,7 +18,7 @@ export default function Home() {
           optimization problem, A/B experiment analysis, and fleet utilization metrics. Everything runs live in your browser on synthetic data.
         </p>
         <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/optimizer" className="rounded-lg bg-accent text-white font-semibold px-5 py-2.5 hover:brightness-110 transition">
+          <Link href="/optimizer" className="rounded-lg bg-accent-btn text-white font-semibold px-5 py-2.5 hover:brightness-110 transition">
             Try the optimizer
           </Link>
           <a

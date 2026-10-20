@@ -150,7 +150,7 @@ export default function OptimizerPage() {
                   key={s}
                   onClick={() => setStrategy(s)}
                   aria-pressed={strategy === s}
-                  className={`px-2 py-2 ${strategy === s ? "bg-accent text-white" : "text-muted hover:bg-panel-2"}`}
+                  className={`px-2 py-2 ${strategy === s ? "bg-accent-btn text-white" : "text-muted hover:bg-panel-2"}`}
                 >
                   {s === "naive" ? "Naive (nearest zone)" : "Optimized (max value)"}
                 </button>
@@ -160,7 +160,7 @@ export default function OptimizerPage() {
 
           <button
             onClick={run}
-            className="rounded-lg bg-accent text-white font-semibold py-3 hover:brightness-110 active:brightness-95 transition"
+            className="rounded-lg bg-accent-btn text-white font-semibold py-3 hover:brightness-110 active:brightness-95 transition"
           >
             {done || (shown && progress > 0) ? "Run again" : "Run Optimizer"}
           </button>
