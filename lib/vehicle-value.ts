@@ -12,6 +12,16 @@ export const travelKm = (v: Pick<Vehicle, "lat" | "lng">, zoneId: string) => {
   return roadKm([v.lat, v.lng], [z.lat, z.lng]);
 };
 
+/** Rider-side pickup ETA: ~3 min with ample cars nearby, rising toward ~13 min when coverage is thin. */
+export function riderEta(demand: number, supplyCapacity: number) {
+  if (demand <= 0) return 3;
+  const coverage = Math.min(1, supplyCapacity / demand);
+  return 3 + 10 * (1 - coverage) ** 1.5;
+}
+
+/** Default cost of one rider waiting one minute, $/rider-min (used in the optimized objective). */
+export const WAIT_COST_PER_MIN = 0.5;
+
 export const maxTravelMinutes = (horizonHours: number) => Math.min(45, 30 * horizonHours);
 
 /**
@@ -33,6 +43,18 @@ export function slotValue(opts: {
   const remaining = Math.max(0, zoneDemand - slot * RIDES_PER_VEHICLE_HR * horizonHours);
   const rides = Math.min(perVehicle, remaining);
   return rides * model.avg_fare_by_zone[zoneId] - COST_PER_KM * opts.travelKm;
+}
+
+/**
+ * Rider-minutes of waiting saved by sending a vehicle to a zone as its k-th car. Diminishing in k because
+ * riderEta flattens as coverage approaches 1.
+ */
+export function waitSavedRiderMin(opts: { slot: number; zoneDemand: number; travelMin: number; horizonHours: number }) {
+  const { slot, zoneDemand, travelMin, horizonHours } = opts;
+  if (zoneDemand <= 0) return 0;
+  const full = RIDES_PER_VEHICLE_HR * horizonHours;
+  const usable = RIDES_PER_VEHICLE_HR * Math.max(0, horizonHours - travelMin / 60);
+  return zoneDemand * (riderEta(zoneDemand, slot * full) - riderEta(zoneDemand, slot * full + usable));
 }
 
 export { travelMinutes };

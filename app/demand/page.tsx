@@ -7,6 +7,7 @@ import HeatmapLayer from "@/components/HeatmapLayer";
 import TimeSlider, { formatHour } from "@/components/TimeSlider";
 import { predictAll, predictDemand, zones, zoneById } from "@/lib/demand-model";
 import { demandColor } from "@/lib/colors";
+import rides from "@/lib/data/synthetic-rides.json";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const TYPE_LABEL: Record<string, string> = {
@@ -33,6 +34,12 @@ export default function DemandPage() {
     () => [...values.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5),
     [values],
   );
+  const rideStats = useMemo(() => {
+    const rs = selected ? rides.filter((r) => r.pickup_zone === selected) : [];
+    if (!rs.length) return null;
+    const avg = (f: (r: (typeof rs)[number]) => number) => rs.reduce((s, r) => s + f(r), 0) / rs.length;
+    return { n: rs.length, fare: avg((r) => r.fare), km: avg((r) => r.distance_km), wait: avg((r) => r.pickup_wait_min) };
+  }, [selected]);
   const total = useMemo(() => [...values.values()].reduce((s, v) => s + v, 0), [values]);
   const profile = useMemo(
     () => (selected ? Array.from({ length: 24 }, (_, h) => ({ hour: h, demand: +predictDemand(selected, h, dow).toFixed(1) })) : []),
@@ -125,6 +132,22 @@ export default function DemandPage() {
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
+                {rideStats && (
+                  <dl className="mt-3 grid grid-cols-4 gap-2 text-center border-t border-line pt-3">
+                    {[
+                      ["Sample rides", String(rideStats.n)],
+                      ["Avg fare", `$${rideStats.fare.toFixed(2)}`],
+                      ["Avg trip", `${rideStats.km.toFixed(1)} km`],
+                      ["Avg wait", `${rideStats.wait.toFixed(1)} min`],
+                    ].map(([k, v]) => (
+                      <div key={k}>
+                        <dd className="font-semibold tabular-nums text-sm">{v}</dd>
+                        <dt className="text-[11px] text-muted">{k}</dt>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                <p className="text-[11px] text-muted mt-2">Pickups from the 1,000-ride synthetic sample (all hours and days).</p>
               </>
             )}
           </section>

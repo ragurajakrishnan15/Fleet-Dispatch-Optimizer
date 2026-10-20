@@ -1,5 +1,7 @@
 import { zones as allZones } from "./demand-model";
-import { RIDES_PER_VEHICLE_HR, maxTravelMinutes, slotValue, travelKm, travelMinutes } from "./vehicle-value";
+import { RIDES_PER_VEHICLE_HR, WAIT_COST_PER_MIN, maxTravelMinutes, riderEta, slotValue, travelKm, travelMinutes, waitSavedRiderMin } from "./vehicle-value";
+
+export { riderEta };
 import type { Assignment, Vehicle, Zone } from "./types";
 
 export type Strategy = "naive" | "optimized";
@@ -97,7 +99,7 @@ function toAssignment(v: Vehicle, zoneId: string, slot: number, demand: Map<stri
  * horizon: hours.
  *
  * naive     : each vehicle (in id order) goes to its nearest zone that still has unmet demand.
- * optimized : max sum of slot values s.t. every vehicle gets exactly one zone, zone capacity,
+ * optimized : max sum of (slot revenue + wait-cost saving) s.t. every vehicle gets exactly one zone, zone capacity,
  *             and travel time <= maxTravelMinutes(horizon). Solved exactly with the Hungarian method
  *             on a vehicle x zone-slot matrix.
  */
@@ -107,10 +109,11 @@ export function optimizeDispatch(
   demand: Map<string, number>,
   horizon: number,
   strategy: Strategy = "optimized",
+  waitCostPerMin: number = WAIT_COST_PER_MIN,
 ): Assignment[] {
   return strategy === "naive"
     ? naiveDispatch(vehicles, zones, demand, horizon)
-    : valueDispatch(vehicles, zones, demand, horizon);
+    : valueDispatch(vehicles, zones, demand, horizon, waitCostPerMin);
 }
 
 function naiveDispatch(vehicles: Vehicle[], zones: Zone[], demand: Map<string, number>, horizon: number) {
@@ -126,7 +129,7 @@ function naiveDispatch(vehicles: Vehicle[], zones: Zone[], demand: Map<string, n
   });
 }
 
-function valueDispatch(vehicles: Vehicle[], zones: Zone[], demand: Map<string, number>, horizon: number) {
+function valueDispatch(vehicles: Vehicle[], zones: Zone[], demand: Map<string, number>, horizon: number, waitCostPerMin: number) {
   const cap = zoneCapacities(demand, zones, horizon, vehicles.length);
   const limit = maxTravelMinutes(horizon);
   const slots: { zoneId: string; slot: number }[] = [];
@@ -140,14 +143,10 @@ function valueDispatch(vehicles: Vehicle[], zones: Zone[], demand: Map<string, n
       const min = travelMinutes(k);
       // travel limit is a soft wall: keeps the matrix solvable if a vehicle truly cannot reach anything
       if (min > limit) return INFEASIBLE + min;
-      return -slotValue({
-        zoneId,
-        slot,
-        zoneDemand: demand.get(zoneId) ?? 0,
-        travelMin: min,
-        travelKm: k,
-        horizonHours: horizon,
-      });
+      const zoneDemand = demand.get(zoneId) ?? 0;
+      const revenue = slotValue({ zoneId, slot, zoneDemand, travelMin: min, travelKm: k, horizonHours: horizon });
+      const waitSaving = waitCostPerMin * waitSavedRiderMin({ slot, zoneDemand, travelMin: min, horizonHours: horizon });
+      return -(revenue + waitSaving);
     }),
   );
   const col = hungarian(cost);
@@ -162,13 +161,6 @@ export interface DispatchOutcome {
   avgPickupEtaMin: number;
   utilizationPct: number;
   avgTravelMin: number;
-}
-
-/** Rider-side pickup ETA: ~3 min with ample cars nearby, rising toward ~13 min when coverage is thin. */
-export function riderEta(demand: number, supplyCapacity: number) {
-  if (demand <= 0) return 3;
-  const coverage = Math.min(1, supplyCapacity / demand);
-  return 3 + 10 * (1 - coverage) ** 1.5;
 }
 
 /** Expected-value outcome of an assignment against forecast demand over the horizon. */

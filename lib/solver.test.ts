@@ -28,15 +28,21 @@ describe("dispatch", () => {
     [2, 1, 30],
   ];
   for (const [hour, horizon, n] of cases) {
-    it(`optimized >= naive revenue (hour ${hour}, ${horizon}h horizon, ${n} vehicles)`, () => {
+    it(`pure-revenue objective >= naive revenue (hour ${hour}, ${horizon}h horizon, ${n} vehicles)`, () => {
       const vehicles = generateFleet(n, 7);
       const d = demandFor(hour, 2, horizon);
       const naive = evaluate(optimizeDispatch(vehicles, zones, d, horizon, "naive"), d, horizon);
-      const opt = evaluate(optimizeDispatch(vehicles, zones, d, horizon, "optimized"), d, horizon);
-      console.log(JSON.stringify({ hour, horizon, n, naive, opt }));
+      const opt = evaluate(optimizeDispatch(vehicles, zones, d, horizon, "optimized", 0), d, horizon);
       expect(opt.totalRevenue).toBeGreaterThanOrEqual(naive.totalRevenue - 1e-6);
     });
   }
+  it("a rider-wait cost lowers pickup ETA relative to a pure-revenue objective", () => {
+    const vehicles = generateFleet(50, 11);
+    const d = demandFor(21, 3, 2);
+    const pure = evaluate(optimizeDispatch(vehicles, zones, d, 2, "optimized", 0), d, 2);
+    const wait = evaluate(optimizeDispatch(vehicles, zones, d, 2, "optimized", 0.5), d, 2);
+    expect(wait.avgPickupEtaMin).toBeLessThanOrEqual(pure.avgPickupEtaMin + 1e-9);
+  });
   it("assigns every vehicle once and respects zone capacity", () => {
     const vehicles = generateFleet(60, 3);
     const d = demandFor(8, 1, 2);

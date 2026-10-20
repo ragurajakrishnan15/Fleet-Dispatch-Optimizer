@@ -4,7 +4,7 @@ import { writeFileSync } from "node:fs";
 import { runSimulation } from "../lib/simulation.ts";
 
 const t0 = Date.now();
-const result = runSimulation(42);
+const result = runSimulation({ seed: 42 });
 writeFileSync("lib/data/experiment-results.json", JSON.stringify(result));
 
 const mean = (xs: number[]) => xs.reduce((s, x) => s + x, 0) / xs.length;

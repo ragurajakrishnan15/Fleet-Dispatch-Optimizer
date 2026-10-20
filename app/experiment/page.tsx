@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import ExperimentChart from "@/components/ExperimentChart";
 import raw from "@/lib/data/experiment-results.json";
+import sens from "@/lib/data/sensitivity.json";
 import { column, formatP, mean, pairedTTest, tQuantile, variance, welchTTest, type MetricKey } from "@/lib/ab-stats";
 import type { DailyMetrics } from "@/lib/types";
 
@@ -27,6 +28,14 @@ const cumulative = days.map((_, i) => {
     Treatment: +mean(upto.map((d) => d.treatment.revenuePerVehicleHr)).toFixed(3),
   };
 });
+
+const CLUSTER_LABELS: Record<number, string> = { 0: "Uniform", 1: "Mild", 2: "Baseline", 3: "Strong" };
+const DEMAND_LABELS: Record<number, string> = { 0.6: "Low demand (0.6×)", 1: "Baseline demand", 1.4: "High demand (1.4×)" };
+const clusterings = [...new Set(sens.grid.map((g) => g.clustering))];
+const demandMults = [...new Set(sens.grid.map((g) => g.demandMultiplier))];
+const maxP = Math.max(...sens.grid.map((g) => Math.max(g.revP, g.etaP)));
+const revRange = [Math.min(...sens.grid.map((g) => g.revLift)), Math.max(...sens.grid.map((g) => g.revLift))];
+const pct1 = (v: number) => `${v >= 0 ? "+" : ""}${(v * 100).toFixed(1)}%`;
 
 type Analysis = "paired" | "welch";
 const sign = (v: number, d = 1) => `${v >= 0 ? "+" : ""}${(v * 100).toFixed(d)}%`;
@@ -167,6 +176,76 @@ export default function ExperimentPage() {
           </div>
         </section>
       </div>
+
+      <section className="rounded-xl border border-line bg-panel p-4">
+        <h2 className="font-semibold">Sensitivity: does the result depend on my assumptions?</h2>
+        <p className="text-sm text-muted mt-1">
+          The whole 30-day experiment was re-run under {sens.grid.length} scenarios, varying how strongly idle cars bunch up where the previous
+          window&apos;s demand was, and the overall demand level. The optimizer wins in every one: revenue per vehicle-hour {pct1(revRange[0])} to{" "}
+          {pct1(revRange[1])}, and every paired p-value is below {maxP < 0.001 ? "0.001" : maxP.toFixed(3)}.
+        </p>
+        <div className="overflow-x-auto mt-3">
+          <table className="w-full text-sm min-w-[560px] tabular-nums">
+            <thead>
+              <tr className="text-left text-muted border-b border-line">
+                <th className="py-2 font-medium">Car positioning ↓ / Demand →</th>
+                {demandMults.map((d) => (
+                  <th key={d} className="font-medium text-right">
+                    {DEMAND_LABELS[d]}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {clusterings.map((c) => (
+                <tr key={c} className="border-b border-line last:border-0">
+                  <td className="py-2 text-muted">{CLUSTER_LABELS[c]}</td>
+                  {demandMults.map((d) => {
+                    const g = sens.grid.find((x) => x.clustering === c && x.demandMultiplier === d)!;
+                    const base = c === 2 && d === 1;
+                    return (
+                      <td key={d} className={`text-right py-2 ${base ? "bg-accent-soft" : ""}`}>
+                        <span className={g.revLift > 0 ? "text-good" : "text-bad"}>{pct1(g.revLift)} rev</span> <span className="text-muted">·</span>{" "}
+                        <span className={g.etaLift < 0 ? "text-good" : "text-bad"}>{pct1(g.etaLift)} ETA</span>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="font-medium mt-5">Objective design: revenue vs rider wait</h3>
+        <p className="text-sm text-muted mt-1">
+          A pure-revenue objective sends cars to the highest-fare zones and slightly <em>worsens</em> pickup ETA. Adding a cost per rider-minute of
+          waiting fixes that, and also raises revenue (a plausible reason: spreading cars hedges against forecast error, though I did not isolate this). The revenue gain flattens near
+          $0.50/min, so that is the default.
+        </p>
+        <div className="overflow-x-auto mt-2">
+          <table className="w-full text-sm min-w-[420px] tabular-nums">
+            <thead>
+              <tr className="text-left text-muted border-b border-line">
+                <th className="py-2 font-medium">Wait cost ($/rider-min)</th>
+                <th className="font-medium text-right">Revenue / vehicle / hr</th>
+                <th className="font-medium text-right">Pickup ETA</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sens.waitCost.map((w) => (
+                <tr key={w.waitCostPerMin} className={`border-b border-line last:border-0 ${w.waitCostPerMin === 0.5 ? "bg-accent-soft" : ""}`}>
+                  <td className="py-2">
+                    ${w.waitCostPerMin.toFixed(2)}
+                    {w.waitCostPerMin === 0.5 && <span className="text-muted"> (default)</span>}
+                  </td>
+                  <td className={`text-right ${w.revLift > 0 ? "text-good" : "text-bad"}`}>{pct1(w.revLift)}</td>
+                  <td className={`text-right ${w.etaLift < 0 ? "text-good" : "text-bad"}`}>{pct1(w.etaLift)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section className="rounded-xl border border-line bg-panel p-4 text-sm text-muted space-y-2">
         <p>

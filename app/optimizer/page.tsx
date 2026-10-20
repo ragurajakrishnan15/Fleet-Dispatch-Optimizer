@@ -10,7 +10,7 @@ import TimeSlider, { formatHour } from "@/components/TimeSlider";
 import { predictWindow, zones } from "@/lib/demand-model";
 import { FLEET_CLUSTERING, generateFleet } from "@/lib/fleet";
 import { evaluate, optimizeDispatch, zoneCapacities, type Strategy } from "@/lib/solver";
-import { maxTravelMinutes } from "@/lib/vehicle-value";
+import { WAIT_COST_PER_MIN, maxTravelMinutes } from "@/lib/vehicle-value";
 
 const DOW = 3; // Wednesday
 const ANIM_MS = 2200;
@@ -218,8 +218,9 @@ export default function OptimizerPage() {
         </table>
         <div className="mt-4 text-sm text-muted space-y-2">
           <p>
-            <span className="text-fg font-medium">Objective:</span> maximize Σ expected value, where each vehicle-to-zone slot is worth
-            (rides it can serve × avg fare) − deadhead cost, and later vehicles in the same zone only get the demand earlier ones left over.
+            <span className="text-fg font-medium">Objective:</span> maximize Σ slot value, where each vehicle-to-zone slot is worth (rides it can
+            serve × avg fare) − deadhead cost + ${WAIT_COST_PER_MIN.toFixed(2)} × rider-minutes of waiting it saves. Later vehicles in the same zone
+            only get the demand earlier ones left over. The revenue figures shown are fares less deadhead cost only.
           </p>
           <p>
             <span className="text-fg font-medium">Constraints:</span> every vehicle gets exactly one zone · zone capacity ∝ demand (total capacity{" "}
