@@ -88,6 +88,10 @@ export default function OptimizerPage() {
   const curLift = cur ? ((cur.totalRevenue - naive.totalRevenue) / naive.totalRevenue) * 100 : 0;
   const cap = useMemo(() => zoneCapacities(demand, zones, horizon, nVehicles), [demand, horizon, nVehicles]);
   const done = progress >= 1 && !!shown;
+  const overLimit = useMemo(
+    () => plans.optimized.assignments.filter((a) => a.travelTimeMinutes > maxTravelMinutes(horizon)).length,
+    [plans, horizon],
+  );
 
   return (
     <div className="flex flex-col gap-5">
@@ -224,8 +228,11 @@ export default function OptimizerPage() {
           </p>
           <p>
             <span className="text-fg font-medium">Constraints:</span> every vehicle gets exactly one zone · zone capacity ∝ demand (total capacity{" "}
-            {[...cap.values()].reduce((s, c) => s + c, 0)} slots for {nVehicles} vehicles) · repositioning trip ≤ {maxTravelMinutes(horizon)} min. Solved
-            exactly with the Hungarian algorithm on a vehicle × zone-slot matrix. Naive greedily sends each car to its nearest zone with unmet demand.
+            {[...cap.values()].reduce((s, c) => s + c, 0)} slots for {nVehicles} vehicles) · repositioning trip ≤ {maxTravelMinutes(horizon)} min (a soft limit: a vehicle only exceeds it
+            when no reachable slot is free —{" "}
+            <span className="text-fg">{overLimit === 0 ? "none do in this run" : `${overLimit} vehicle${overLimit === 1 ? "" : "s"} do in this run`}</span>). Solved
+            exactly with the Hungarian algorithm on a vehicle × zone-slot matrix, and the same formulation was independently verified on six exported instances with Google OR-Tools CP-SAT (see the
+            repo&apos;s <code className="font-mono text-xs">python/</code> folder). Naive greedily sends each car to its nearest zone with unmet demand.
           </p>
         </div>
       </section>

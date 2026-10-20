@@ -1,0 +1,85 @@
+{
+ "data": "synthetic hourly request counts, Poisson around the known rate model",
+ "zones": 20,
+ "weeks": 12,
+ "train_rows": 30240,
+ "test_rows": 6720,
+ "test_days": 14,
+ "model": "HistGradientBoostingRegressor(loss='poisson')",
+ "features": [
+  "hour",
+  "dow",
+  "is_weekend",
+  "zone_cat",
+  "lag_1h",
+  "lag_24h",
+  "lag_168h",
+  "roll_mean_24h",
+  "how_mean",
+  "how_mean_4w"
+ ],
+ "metrics": {
+  "oracle_true_rate": {
+   "mae": 3.0269359375000002,
+   "rmse": 4.283758254082789,
+   "poisson_deviance": 1.0104443229478788
+  },
+  "gradient_boosting": {
+   "mae": 3.2077228132843514,
+   "rmse": 4.576708912539781,
+   "poisson_deviance": 1.113062638420761
+  },
+  "seasonal_average": {
+   "mae": 3.1976521164021166,
+   "rmse": 4.535194529233494,
+   "poisson_deviance": 1.1209000877260047
+  },
+  "global_mean": {
+   "mae": 14.84962962962963,
+   "rmse": 19.662158447449514,
+   "poisson_deviance": 17.57726349928138
+  }
+ },
+ "permutation_importance": [
+  {
+   "feature": "how_mean",
+   "importance": 20.783724118868857
+  },
+  {
+   "feature": "how_mean_4w",
+   "importance": 0.28231177698548743
+  },
+  {
+   "feature": "lag_1h",
+   "importance": 0.25846166744304266
+  },
+  {
+   "feature": "zone_cat",
+   "importance": 0.11810819609282545
+  },
+  {
+   "feature": "lag_24h",
+   "importance": 0.07756615930068925
+  },
+  {
+   "feature": "hour",
+   "importance": 0.06355004941469419
+  },
+  {
+   "feature": "roll_mean_24h",
+   "importance": 0.01843393557764106
+  },
+  {
+   "feature": "is_weekend",
+   "importance": 0.010917922179748763
+  },
+  {
+   "feature": "lag_168h",
+   "importance": 0.007791577045990694
+  },
+  {
+   "feature": "dow",
+   "importance": 0.007092426459960333
+  }
+ ]
+}

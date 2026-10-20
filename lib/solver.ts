@@ -129,7 +129,22 @@ function naiveDispatch(vehicles: Vehicle[], zones: Zone[], demand: Map<string, n
   });
 }
 
-function valueDispatch(vehicles: Vehicle[], zones: Zone[], demand: Map<string, number>, horizon: number, waitCostPerMin: number) {
+export interface AssignmentProblem {
+  slots: { zoneId: string; slot: number }[];
+  /** cost[vehicle][slot] = -(slot revenue + wait-cost saving); out-of-range trips carry a large penalty */
+  cost: number[][];
+  /** vehicle x slot is a reachable pairing within the travel limit */
+  feasible: boolean[][];
+}
+
+/** Builds the vehicle x zone-slot cost matrix that the optimized strategy minimises. */
+export function buildAssignmentProblem(
+  vehicles: Vehicle[],
+  zones: Zone[],
+  demand: Map<string, number>,
+  horizon: number,
+  waitCostPerMin: number,
+): AssignmentProblem {
   const cap = zoneCapacities(demand, zones, horizon, vehicles.length);
   const limit = maxTravelMinutes(horizon);
   const slots: { zoneId: string; slot: number }[] = [];
@@ -137,18 +152,28 @@ function valueDispatch(vehicles: Vehicle[], zones: Zone[], demand: Map<string, n
 
   const INFEASIBLE = 1e6;
   const km = vehicles.map((v) => new Map(zones.map((z) => [z.id, travelKm(v, z.id)])));
-  const cost = vehicles.map((_, i) =>
-    slots.map(({ zoneId, slot }) => {
+  const feasible: boolean[][] = [];
+  const cost = vehicles.map((_, i) => {
+    const frow: boolean[] = [];
+    const row = slots.map(({ zoneId, slot }) => {
       const k = km[i].get(zoneId)!;
       const min = travelMinutes(k);
       // travel limit is a soft wall: keeps the matrix solvable if a vehicle truly cannot reach anything
+      frow.push(min <= limit);
       if (min > limit) return INFEASIBLE + min;
       const zoneDemand = demand.get(zoneId) ?? 0;
       const revenue = slotValue({ zoneId, slot, zoneDemand, travelMin: min, travelKm: k, horizonHours: horizon });
       const waitSaving = waitCostPerMin * waitSavedRiderMin({ slot, zoneDemand, travelMin: min, horizonHours: horizon });
       return -(revenue + waitSaving);
-    }),
-  );
+    });
+    feasible.push(frow);
+    return row;
+  });
+  return { slots, cost, feasible };
+}
+
+function valueDispatch(vehicles: Vehicle[], zones: Zone[], demand: Map<string, number>, horizon: number, waitCostPerMin: number) {
+  const { slots, cost } = buildAssignmentProblem(vehicles, zones, demand, horizon, waitCostPerMin);
   const col = hungarian(cost);
   return vehicles.map((v, i) => {
     const { zoneId, slot } = slots[col[i]];

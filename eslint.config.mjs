@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Python tooling lives here (its virtualenv ships JavaScript that is not ours to lint)
+    "python/**",
   ]),
 ]);
 

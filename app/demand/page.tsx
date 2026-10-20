@@ -8,6 +8,7 @@ import TimeSlider, { formatHour } from "@/components/TimeSlider";
 import { predictAll, predictDemand, zones, zoneById } from "@/lib/demand-model";
 import { demandColor } from "@/lib/colors";
 import rides from "@/lib/data/synthetic-rides.json";
+import gbt from "@/lib/data/gbt-metrics.json";
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const TYPE_LABEL: Record<string, string> = {
@@ -155,12 +156,45 @@ export default function DemandPage() {
           <section className="rounded-xl border border-line bg-panel p-4 text-sm">
             <h2 className="font-semibold mb-2">About the model</h2>
             <p className="text-muted">
-              A transparent rate model, not a trained ML model: the curves are hand-specified and the 1,000 rides in the dataset are sampled from it.
+              The map above is driven by a transparent rate model: its curves are hand-specified, and the 1,000 rides in the dataset are sampled from it.
               Expected requests are a zone base rate scaled by an hour-of-day curve that depends on zone type (rush-hour direction flips between residential and commercial / tech zones,
               entertainment spikes late at night) and a day-of-week factor.
             </p>
             <p className="mt-2 font-mono text-xs bg-panel-2 rounded-md p-2 overflow-x-auto">
               demand = base_rate[zone] × hour_curve[zone_type, weekday|weekend][hour] × dow_factor[dow]
+            </p>
+            <h3 className="font-medium mt-3 mb-1">Trained model check (Python)</h3>
+            <p className="text-muted">
+              A gradient-boosted model (scikit-learn, Poisson loss) was trained on a SQL-built feature table of {gbt.zones} zones × {gbt.weeks} weeks of synthetic hourly
+              requests and scored on the last {gbt.test_days} days. Lower is better.
+            </p>
+            <table className="w-full text-xs mt-2 tabular-nums">
+              <thead>
+                <tr className="text-left text-muted border-b border-line">
+                  <th className="py-1 font-medium">Model</th>
+                  <th className="font-medium text-right">MAE</th>
+                  <th className="font-medium text-right">Poisson dev.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(
+                  [
+                    ["True rate (noise floor)", gbt.metrics.oracle_true_rate],
+                    ["Gradient boosting", gbt.metrics.gradient_boosting],
+                    ["Seasonal average", gbt.metrics.seasonal_average],
+                  ] as const
+                ).map(([name, m]) => (
+                  <tr key={name} className="border-b border-line last:border-0">
+                    <td className="py-1">{name}</td>
+                    <td className="text-right">{m.mae.toFixed(2)}</td>
+                    <td className="text-right">{m.poisson_deviance.toFixed(3)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p className="text-muted mt-2">
+              On this synthetic data the boosted model roughly ties a simple seasonal average (both near the noise floor): the data contain no structure beyond the
+              rate, so there is little to learn. It is a pipeline demonstration, not evidence of real-world forecasting skill.
             </p>
             <h3 className="font-medium mt-3 mb-1">Features</h3>
             <ul className="text-muted list-disc pl-5 space-y-0.5">

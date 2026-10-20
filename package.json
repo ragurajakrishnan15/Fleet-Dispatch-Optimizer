@@ -10,7 +10,8 @@
     "generate-data": "tsx scripts/generate-data.ts",
     "test": "vitest run",
     "simulate": "tsx scripts/run-simulation.ts",
-    "sensitivity": "tsx scripts/run-sensitivity.ts"
+    "sensitivity": "tsx scripts/run-sensitivity.ts",
+    "export-instances": "tsx scripts/export-instances.ts"
   },
   "dependencies": {
     "next": "16.4.2",

@@ -359,9 +359,15 @@ Store pre-computed gradient boosting coefficients in `model-weights.json`:
 ## What to Put on Resume / Cover Letter
 
 **Resume line** (updated to match what was actually built; live link https://fleet-dispatch-optimizer.vercel.app):
-"Fleet Dispatch Optimizer — Built and deployed an interactive marketplace-logistics demo (Next.js, TypeScript): exact vehicle-to-zone dispatch via the Hungarian algorithm on a capacity-expanded assignment problem with a revenue-plus-rider-wait objective, and a 30-day simulated A/B test analyzed with paired t-tests and a 12-scenario sensitivity sweep (+3.5% revenue/vehicle-hr, −5% pickup ETA vs. a nearest-zone baseline). https://fleet-dispatch-optimizer.vercel.app"
+"Fleet Dispatch Optimizer — Built and deployed an end-to-end marketplace-logistics project (Python, SQL, TypeScript/Next.js): vehicle-to-zone dispatch formulated as an assignment problem and verified optimal with OR-Tools CP-SAT, a revenue-plus-rider-wait objective, a SQL-feature-pipeline gradient-boosted demand model (scikit-learn), and a 30-day simulated A/B test analyzed with paired t-tests and a 12-scenario sensitivity sweep (+3.5% revenue/vehicle-hr, -5% pickup ETA vs. a nearest-zone baseline). https://fleet-dispatch-optimizer.vercel.app"
 
 **Cover letter mention:**
-"I built an interactive fleet-dispatch demo at https://fleet-dispatch-optimizer.vercel.app that shows how I approach marketplace logistics: formulating dispatch as a constrained assignment problem and solving it exactly, designing the objective (I found a pure-revenue objective slightly worsened rider wait and fixed it), and evaluating it with a controlled experiment and a sensitivity analysis. It runs entirely on synthetic data and says so."
+"I built a fleet-dispatch project at https://fleet-dispatch-optimizer.vercel.app that mirrors the work in this role: I formulated off-hail vehicle dispatch as a constrained assignment problem, solved it exactly and cross-checked the optimum with CP-SAT, designed the objective (a pure-revenue objective slightly worsened rider wait, so I added a wait cost), built a SQL feature pipeline and gradient-boosted demand model, and evaluated the policy with a controlled experiment and a sensitivity analysis. Everything runs on synthetic data and says so."
 
-**Be ready to say in interviews:** all numbers come from a simulation on synthetic data; the demand model is a hand-specified rate model, not a trained ML model; the solver is the Hungarian algorithm (exact), not CP-SAT.
+**Be ready to say in interviews:**
+- All results come from a simulation on synthetic data, not real operations.
+- The gradient-boosted model roughly ties a seasonal-average baseline on this data (the data has no structure beyond the rate), so it demonstrates the pipeline and evaluation, not forecasting skill.
+- The web app's map runs on a hand-specified rate model; the trained model is in python/.
+- The production solver in the app is a hand-written Hungarian algorithm; CP-SAT is used to verify it. I have not used CPLEX or Gurobi.
+- The travel-time limit is a soft constraint: in tight cases a vehicle can exceed it.
+- I have not built an automated production pipeline with an engineering team; the scripts here are a research-style pipeline.
