@@ -6,10 +6,23 @@ import "./globals.css";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
+const siteUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : "http://localhost:3000";
+const description =
+  "Interactive autonomous-vehicle fleet dispatch demo: demand forecasting, exact assignment optimization, and A/B experiment analysis.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Fleet Dispatch Optimizer",
-  description:
-    "Interactive autonomous-vehicle fleet dispatch demo: demand forecasting, exact assignment optimization, and A/B experiment analysis.",
+  description,
+  openGraph: {
+    title: "Fleet Dispatch Optimizer",
+    description,
+    type: "website",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Fleet Dispatch Optimizer" }],
+  },
+  twitter: { card: "summary_large_image", title: "Fleet Dispatch Optimizer", description, images: ["/og-image.png"] },
 };
 
 // Runs before paint so the saved theme never flashes.

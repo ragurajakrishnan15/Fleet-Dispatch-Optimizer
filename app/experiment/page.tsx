@@ -141,7 +141,7 @@ export default function ExperimentPage() {
           <h2 className="font-semibold mb-1">95% confidence intervals · relative lift</h2>
           <p className="text-xs text-muted mb-2">Green: significant change in the desired direction. Amber: interval crosses zero.</p>
           <ExperimentChart
-            rows={rows.map((m) => ({ label: m.label.replace(" / vehicle / hr", " /veh/hr"), lift: m.r.lift, lo: m.r.liftCi95[0], hi: m.r.liftCi95[1], lowerIsBetter: m.lowerIsBetter }))}
+            rows={rows.map((m) => ({ label: m.label.replace(" / vehicle / hr", " /veh/hr").replace("Avg pickup ETA (min)", "Pickup ETA").replace("Rides completed / day", "Rides / day").replace("Fleet utilization %", "Utilization"), lift: m.r.lift, lo: m.r.liftCi95[0], hi: m.r.liftCi95[1], lowerIsBetter: m.lowerIsBetter }))}
           />
         </section>
 

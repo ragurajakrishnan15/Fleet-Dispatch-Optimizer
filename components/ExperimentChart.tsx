@@ -9,10 +9,10 @@ export interface CiRow {
 
 /** Horizontal 95% confidence-interval plot of relative lift per metric. */
 export default function ExperimentChart({ rows }: { rows: CiRow[] }) {
-  const W = 640;
+  const W = 440;
   const rowH = 46;
-  const left = 150;
-  const right = 24;
+  const left = 124;
+  const right = 20;
   const H = rows.length * rowH + 44;
   const all = rows.flatMap((r) => [r.lo, r.hi, 0]).map((v) => v * 100);
   const pad = 1;
